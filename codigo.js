@@ -1,3 +1,4 @@
+
 let pedido ="si";
 let cantidad;
 let producto;
@@ -75,6 +76,18 @@ while (pedido=="si")
     
         alert("Tu total es: "+total);
     }
+}
+
+const bebidas = [{id: 1, producto:"Cerveza"},
+                 {id: 2, producto:"Gaseosa"},
+                 {id: 3, producto:"Agua"},
+                 {id: 4, producto:"Limonada"}];
+
+bebidas.push({id:5, producto:"Licuado"});
+
+for (const producto of bebidas)
+{
+    console.log(producto.producto);
 }
 
 function importe(cantidad,precio,descuento,envio)
