@@ -1,96 +1,76 @@
 
-let pedido ="si";
-let cantidad;
-let producto;
-let descuento;
-let total;
-let precio;
-let envio=50;
-pedido = prompt("Queres pedir algo? si/no");
-while (pedido=="si")
+const menu = 
 {
-    if(pedido!="si")
+    hamburguesa: 400,
+    milanesa: 500,
+    empanada: 150,
+    pizza: 800,
+    cerveza: 300,
+    agua: 150,
+}
+const envio = 50;
+let id = 1;
+function Pedido(id, nombre, cantidad)
+{
+    this.id = id;
+    this.nombre = nombre;
+    this.cantidad = cantidad;
+    this.precio = cantidad*menu[nombre];
+}
+
+const descuentos = [1234,4444,7878,6060,9999];
+
+alert("Nuestro menu: "+JSON.stringify(menu, null, 4)+"Envio: 50");
+
+let importe = 0;
+let pedidoTotal = [];
+function agregarPedido()
+{
+    const nuevoPedido = new Pedido(id,prompt("Que queres pedir?"),parseInt(prompt("ingrese cantidad")));
+    if(!(nuevoPedido.nombre in menu))
     {
-        break;
+        alert("El producto ingresado no existe");
     }
-    alert("Elegi un producto del menu");
-    producto = prompt("Elegi un producto:\n hamburguesa - $400 \n milanesa - $500 \n empanadas - $150 \n Envio: $50");
-    while((producto=="hamburguesa")||(producto=="milanesa")||(producto=="empanadas"))
+    else
     {
-        cantidad = parseInt(prompt("Que cantidad queres?"));
-        while((isNaN(cantidad)||(cantidad<1)))
+        if(nuevoPedido.cantidad < 1)
         {
-            alert("Ingresa un numero positivo")
-            cantidad = parseInt(prompt("Que cantidad queres?"));
+            alert("Por favor ingrese una cantidad mayor a cero")
         }
-        
+        else if(nuevoPedido.cantidad > 50)
         {
-            if (producto=="empanadas")
-            {
-                let carne=0;
-                let pollo=0;
-                for (let i=1; i<=cantidad; i++) 
-                {
-                    let gusto = prompt("La empanada "+i+" de carne o pollo?");
-                    if(gusto=="carne") carne++;
-                    else pollo++;
-                }
-                precio = 150;
-                alert("Tu pedido: "+carne+" empanadas de carne y "+pollo+" empanadas de pollo");
-            }
-            else
-            {
-                if(producto=="hamburguesa")
-                {
-                    precio=400;
-                }
-                else
-                {
-                    precio=500;
-                }
-                if(cantidad>1)
-                {
-                    alert("Tu pedido: "+cantidad+" "+producto+"s");
-                }
-                else
-                {
-                    alert("Tu pedido: "+cantidad+" "+producto);
-                }
-            }
-            pedido = "no";
-            producto = "no";
-            // break;
-        }
-        codigo = prompt("Ingresa un codigo de descuento si tenes.(<1234>)");
-        if (codigo=="1234")
-        {
-            alert("Descuento de 10%!");
-            descuento=0.9;
+            alert("Parece que te equivocaste con la cantidad")
         }
         else
         {
-            alert("Codigo no valido");
-            descuento=1;
+            id++;
+            pedidoTotal.push(nuevoPedido);
+            importe=importe+nuevoPedido.precio;
         }
-        total = importe(cantidad,precio,descuento,envio)
-    
-        alert("Tu total es: "+total);
     }
 }
 
-const bebidas = [{id: 1, producto:"Cerveza"},
-                 {id: 2, producto:"Gaseosa"},
-                 {id: 3, producto:"Agua"},
-                 {id: 4, producto:"Limonada"}];
-
-bebidas.push({id:5, producto:"Licuado"});
-
-for (const producto of bebidas)
+let pedir = true;
+while(pedir)
 {
-    console.log(producto.producto);
+    agregarPedido();
+    if(!(confirm("Queres pedir algo mas?")))
+    {
+        pedir = false;
+    }
 }
+const codigo = prompt("Ingresa un codigo de descuento si tenes.(<1234>)");
 
-function importe(cantidad,precio,descuento,envio)
+let descuento=1;
+if(descuentos.includes(parseInt(codigo)))
 {
-    return cantidad * precio * descuento + envio;
+    alert("Descuento de 10%!");
+    descuento=0.9;
 }
+else
+{
+    alert("Lo sentimos, ese codigo no es válido");
+    descuento=1;
+}
+importe=importe*descuento+envio;
+alert("Tu pedido: "+JSON.stringify(pedidoTotal, null, 4)+"Tu importe final: "+importe+" Tu pedido esta en camino");
