@@ -4,10 +4,14 @@ function getUser()
 {
     let user = document.getElementById("username");
     let ingresar = document.getElementById("submit");
+    let welcome=document.getElementById("bienvenida");
+    let username = localStorage.getItem("usuario");
+    if(username) welcome.innerText = "Bienvenido " + username + "!";
     ingresar.addEventListener("click", displayUser)
     function displayUser()
     {
         let username=user.value;
+        localStorage.setItem("usuario",username)
         let welcome=document.getElementById("bienvenida");
         welcome.innerText = "Bienvenido " + username + "!";
     }
@@ -27,7 +31,9 @@ function displayMenu(menu)
         let cant = document.createElement("input");
         cant.setAttribute("type","number");
         cant.setAttribute("min","0");
-        cant.setAttribute("oninput","this.value = Math.abs(this.value)")
+        cant.setAttribute("max","24");
+        cant.setAttribute("oninput","this.value = Math.abs(this.value)");
+        cant.setAttribute("step","1");
         cant.id="cant"+contador;
         contador++;
         lista.append(cant);
@@ -38,7 +44,7 @@ function displayMenu(menu)
     lista.append(item);
 }
 
-const menu = 
+const menuBase = 
 {
     hamburguesa: 400,
     milanesa: 500,
@@ -47,6 +53,10 @@ const menu =
     cerveza: 300,
     agua: 150,
 }
+
+sessionStorage.setItem("MI_MENU",JSON.stringify(menuBase));
+let menu = JSON.parse(sessionStorage.getItem("MI_MENU"));
+
 
 displayMenu(menu);
 
