@@ -13,16 +13,27 @@
         <h1 id="titulo">Comidas Nico</h1>
     </header>
     <h2 id="bienvenida">Bienvenido!</h2>
+    <div>
+        <p>Ingresá tu nombre</p>
+        <input placeholder="Juancito" id="username" type="text">
+        <input id="submit" type="submit" value="Ingresar">
+    </div>
     <div id="menu">
         <ol id="menu__lista">
-
         </ol>
     </div>
-    <div id="recibo">
+    <div id="comprar">
+        <input type="submit" value="Hacer pedido!">
+    </div>
+    <div>
         <h3>Tu compra:</h3>
-
+        <p id="recibo"></p>
     </div>
     <script src="codigo.js"></script>
+    <div>
+        <h3>input de prueba</h3>
+        <input type="number" min="0" oninput="this.value = Math.abs(this.value)">
+    </div>
 </body>
 
 </html>
