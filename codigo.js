@@ -25,7 +25,9 @@ function displayMenu(menu)
         item.innerText = producto+": $"+menu[producto];
         lista.append(item);
         let cant = document.createElement("input");
-        cant.setAttribute("type","number","min=0");
+        cant.setAttribute("type","number");
+        cant.setAttribute("min","0");
+        cant.setAttribute("oninput","this.value = Math.abs(this.value)")
         cant.id="cant"+contador;
         contador++;
         lista.append(cant);
