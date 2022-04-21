@@ -34,6 +34,7 @@ function displayMenu(menu)
         cant.setAttribute("max","24");
         cant.setAttribute("oninput","this.value = Math.abs(this.value)");
         cant.setAttribute("step","1");
+        cant.setAttribute("class","pedido");
         cant.id="cant"+contador;
         contador++;
         lista.append(cant);
@@ -43,6 +44,8 @@ function displayMenu(menu)
     item.innerText = "Envio: $"+envio;
     lista.append(item);
 }
+
+
 
 const menuBase = 
 {
@@ -66,30 +69,31 @@ function hacerPedido()
 {
     let botonCompra=document.getElementById("comprar");
     botonCompra.addEventListener("click", ()=>{
-        console.log("prueba checkout")
         let cantidades = contarCantidades();
         let importe = 0;
         for(let cantidad in cantidades)
         {
             importe += cantidades[cantidad]* Object.values(menu)[cantidad];
         }
-        if(importe>50)
-        {
-            let recibo = document.getElementById("recibo");
-            recibo.innerText = "$"+(importe+50);
-        }
+        let recibo = document.getElementById("recibo");
+        importe>envio ? recibo.innerText="$"+(importe+envio) : recibo.innerText=""
     })
 }
 
 function contarCantidades()
 {
+    let error = document.getElementById("recibo--error");
+    error.innerText="";
     let cantidades = [];
     let cantMenu = Object.keys(menu).length;
     for (let i=0; i<cantMenu; i++)
     {
         let prod = document.getElementById("cant"+i);
-        cantidades[i] = prod.value;
+        prod.value<25 ? cantidades[i] = prod.value : error.innerText="Por favor 24 unidades o menos de cada producto"
     }
+    console.log(cantidades)
+    let cantSpread = {...cantidades}
+    console.log(cantSpread)
     return cantidades;
 }
 
