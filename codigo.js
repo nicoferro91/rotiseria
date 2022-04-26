@@ -127,28 +127,63 @@ function updateCarrito(compras)
     }
 }
 
-
+let finalizado = false;
 function hacerPedido()
 {
     let botonCompra=document.getElementById("comprar");
     botonCompra.addEventListener("click", ()=>{
-        let caja = document.getElementById("caja")
-        let cantidades = contarCantidades();
-        let importe = 0;
-        for(let cantidad in cantidades)
+        if (!finalizado)
         {
-            importe += cantidades[cantidad]* Object.values(menu)[cantidad];
-            if(cantidades[cantidad] > 0)
+        
+            finalizado = true;
+            Swal.fire({
+            title: 'Estas seguro?',
+            text: "No se aceptan devoluciones",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, comprar!'
+            }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire(
+                'Perfecto!',
+                'Ya estamos haciendo tu pedido',
+                'success'
+              )
+            let caja = document.getElementById("caja")
+            let cantidades = contarCantidades();
+            let importe = 0;
+            while(caja.firstChild)
             {
-                cantidades[cantidad] > 1 ? plural="s" : plural=""
-                let comprado = document.createElement("li");
-                comprado.innerText = cantidades[cantidad] + " " + Object.keys(menu)[cantidad] + plural
-                caja.append(comprado);
+                carrito.firstChild.remove()
             }
+            for(let cantidad in cantidades)
+            {
+                importe += cantidades[cantidad]* Object.values(menu)[cantidad];
+                if(cantidades[cantidad] > 0)
+                {
+                    cantidades[cantidad] > 1 ? plural="s" : plural=""
+                    let comprado = document.createElement("li");
+                    comprado.innerText = cantidades[cantidad] + " " + Object.keys(menu)[cantidad] + plural
+                    caja.append(comprado);
+                }
+            }
+            let recibo = document.getElementById("recibo");
+            importe>envio ? recibo.innerText="$"+(importe+envio) : recibo.innerText="Elegi algo primero"
+            }})
         }
-        let recibo = document.getElementById("recibo");
-        importe>envio ? recibo.innerText="$"+(importe+envio) : recibo.innerText="Elegi algo primero"
-    })
+        else
+        {
+            Swal.fire({
+                icon: 'error',
+                title: 'Paciencia',
+                text: 'Tu pedido ya está en camino!',
+                footer: '<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Por que tengo que esperar tanto?</a>'
+              })
+        }
+    }
+    )
 }
 
 function contarCantidades()
@@ -166,3 +201,4 @@ function contarCantidades()
 }
 
 hacerPedido();
+
