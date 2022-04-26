@@ -67,32 +67,7 @@ let menu = JSON.parse(sessionStorage.getItem("MI_MENU"));
 displayMenu(menu);
 
 let id = 1;
-/*
-function chequeoCompra()
-{
-    let carrito = document.getElementById("carrito")
-    let contador = 0;
-    for(let producto in menu)
-    {
-        let item = document.getElementById("cant"+contador)
-        item.onchange = ()=> {
-            let agregado = document.createElement("li")
-            agregado.innerText = producto + " " + item.value
-            carrito.append(agregado)
 
-        }
-        contador++;
-    }
-}
-
-class Agregado {
-    constructor(id, nombre, cantidad){
-        this.id = id;
-        this.nombre = nombre;
-        this.cantidad = cantidad;
-    }
-}
-*/
 let compras = []
 let i = 0;
 function chequeoCompra()
@@ -130,7 +105,6 @@ function chequeoCompra()
                     compras.push(sumado)
                 }
             }
-            console.log(compras)
             updateCarrito(compras)
         }
         i++;
@@ -190,7 +164,5 @@ function contarCantidades()
     }
     return cantidades;
 }
-
-
 
 hacerPedido();
