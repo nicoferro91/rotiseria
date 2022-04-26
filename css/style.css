@@ -1,0 +1,10 @@
+#carrito-box{
+    background-color: rgb(255, 147, 147);
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    min-width: 300px;
+    min-height: 200px;
+    border-radius: 1rem;
+    box-shadow: 0 0 0.4rem 0.2rem grey;
+}
