@@ -52,6 +52,41 @@ const menuBase =
     Agua: 150,
 }
 
+sessionStorage.setItem("MI_MENU",JSON.stringify(menuBase));
+let menuStorage = JSON.parse(sessionStorage.getItem("MI_MENU"));
+
+const getMenu = (menu) => new Promise( (resolve, reject) => {
+        let loadingMenu = document.getElementById("menu")
+        let loading = document.createElement("h3")
+        loading.innerText = "Cargando menu..."
+        loading.id = "cargandoMenu"
+        loadingMenu.append(loading)
+        setTimeout(() => {
+            if(menu)
+            {
+                resolve("menu cargado")                
+            }
+            else
+            {
+                reject("error con menu")
+            }
+        }, 500);
+    });
+
+getMenu(menu)
+    .then((response)=>{
+        console.log(response) 
+        displayMenu(menuStorage)
+        chequeoCompra()
+        hacerPedido() })
+    .catch((error)=>{
+        console.log(error)})
+    .finally( ()=>{
+        loading = document.getElementById("cargandoMenu");
+        loading.remove();
+
+    })
+
 class Agregado {
     constructor(nombre, cantidad)
     {
@@ -60,20 +95,15 @@ class Agregado {
     }
 }
 
-sessionStorage.setItem("MI_MENU",JSON.stringify(menuBase));
-let menu = JSON.parse(sessionStorage.getItem("MI_MENU"));
-
-
-displayMenu(menu);
-
 let id = 1;
 
 let compras = []
 let i = 0;
+
 function chequeoCompra()
 {
     let i = 0;
-    for(let producto in menu)
+    for(let producto in menuStorage)
     {
         let item = document.getElementById("cant"+i)
         item.onchange = ()=> {
@@ -110,7 +140,6 @@ function chequeoCompra()
         i++;
     }
 }
-chequeoCompra()
 
 function updateCarrito(compras)
 {
@@ -134,7 +163,6 @@ function hacerPedido()
     botonCompra.addEventListener("click", ()=>{
         if (!finalizado)
         {
-        
             finalizado = true;
             Swal.fire({
             title: 'Estas seguro?',
@@ -160,12 +188,12 @@ function hacerPedido()
             }
             for(let cantidad in cantidades)
             {
-                importe += cantidades[cantidad]* Object.values(menu)[cantidad];
+                importe += cantidades[cantidad]* Object.values(menuStorage)[cantidad];
                 if(cantidades[cantidad] > 0)
                 {
                     cantidades[cantidad] > 1 ? plural="s" : plural=""
                     let comprado = document.createElement("li");
-                    comprado.innerText = cantidades[cantidad] + " " + Object.keys(menu)[cantidad] + plural
+                    comprado.innerText = cantidades[cantidad] + " " + Object.keys(menuStorage)[cantidad] + plural
                     caja.append(comprado);
                 }
             }
@@ -191,7 +219,7 @@ function contarCantidades()
     let error = document.getElementById("recibo--error");
     error.innerText="";
     let cantidades = [];
-    let cantMenu = Object.keys(menu).length;
+    let cantMenu = Object.keys(menuStorage).length;
     for (let i=0; i<cantMenu; i++)
     {
         let prod = document.getElementById("cant"+i);
@@ -200,5 +228,5 @@ function contarCantidades()
     return cantidades;
 }
 
-hacerPedido();
+
 
