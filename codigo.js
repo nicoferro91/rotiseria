@@ -108,27 +108,18 @@ function chequeoCompra()
         let item = document.getElementById("cant"+i)
         item.onchange = ()=> {
             let sumado = new Agregado(producto,item.value)
-
-            if(compras.length==0) 
-            {
-                compras.push(sumado)
-            }
-            else
-            {
+            if(compras.length==0) compras.push(sumado)
+            else {
                 let falta=0;
                 for(let agregados in compras)
                 {
                     let nuevo = Object.values(compras[agregados])
                     nuevo = nuevo[0]
-                    if(producto==nuevo)
-                    {
+                    if(producto==nuevo) {
                         compras[agregados] = sumado;
                         falta=0;
                     }
-                    else
-                    {
-                        falta=1;
-                    }
+                    else falta=1;
                 }
                 if(falta==1)
                 {
@@ -174,6 +165,7 @@ function hacerPedido()
             confirmButtonText: 'Si, comprar!'
             }).then((result) => {
             if (result.isConfirmed) {
+                nutriBoton();
               Swal.fire(
                 'Perfecto!',
                 'Ya estamos haciendo tu pedido',
@@ -228,5 +220,49 @@ function contarCantidades()
     return cantidades;
 }
 
+function nutriBoton()
+{
+    let nutribox = document.getElementById("nutribox");
+    let nutribtn = document.createElement("input");
+    nutribtn.setAttribute("type","submit");
+    nutribtn.setAttribute("class","info-nutri");
+    nutribtn.setAttribute("value","Informacion nutricional");
+    nutribox.append(nutribtn);
+    nutribtn.addEventListener("click", ()=>calcularNutricion())
+}
 
+let nutricion = 
+{
+    Calorias: 0,
+    Carbohidratos: 0,
+    Proteinas: 0,
+    Grasas: 0,
+}
+console.log(nutricion)
 
+function calcularNutricion()
+{
+    let url = "infoNutri.json";
+    fetch(url)
+    .then((res)=>res.json())
+    .then((data)=>
+    {
+        let cantidades = contarCantidades();
+        for(let item in data)
+        {
+            nutricion.Calorias += data[item].calorias*cantidades[item];
+            nutricion.Carbohidratos += data[item].carbohidratos*cantidades[item];
+            nutricion.Proteinas += data[item].proteinas*cantidades[item];
+            nutricion.Grasas += data[item].grasas*cantidades[item];
+        }
+        let nutribox = document.getElementById("nutribox");
+        for(let info in nutricion)
+        {
+            let nutri = document.createElement("li");
+            nutri.innerText = info + ": " + nutricion[info]
+            nutri.setAttribute("class","nutricion")
+            
+            nutribox.append(nutri)
+        }
+    });
+}
