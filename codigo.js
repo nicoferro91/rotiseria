@@ -113,19 +113,30 @@ function chequeoCompra()
                 let falta=0;
                 for(let agregados in compras)
                 {
-                    let nuevo = Object.values(compras[agregados])
-                    nuevo = nuevo[0]
+                    let nuevo = (Object.values(compras[agregados]))[0]
+                    // Chequeamos si el nuevo producto ya está en el carrito para no repetir
                     if(producto==nuevo) {
                         compras[agregados] = sumado;
                         falta=0;
                     }
                     else falta=1;
                 }
+                // Si falta lo agregamos al array sumado
                 if(falta==1)
                 {
                     compras.push(sumado)
                 }
             }
+            // Antes de mandar removemos los productos con cantidad cero
+            for(let agregados in compras)
+            {
+                let chequeoCero = (Object.values(compras[agregados]))[1]
+                if(chequeoCero==0)
+                {
+                    compras.splice(agregados, 1)
+                }
+            }
+
             updateCarrito(compras)
         }
         i++;
@@ -134,19 +145,22 @@ function chequeoCompra()
 
 function updateCarrito(compras)
 {
-    let carrito = document.getElementById("carrito")
-    while(carrito.firstChild)
+    if(!compraFinalizada)
     {
-        carrito.firstChild.remove()
-    }
-    for(let comprados in compras)
-    {
-        let comprado = document.createElement("li");
-        comprado.innerText = Object.values(compras[comprados])[0] + ": " + Object.values(compras[comprados])[1]
-        carrito.append(comprado)
+        let carrito = document.getElementById("carrito")
+        while(carrito.firstChild)
+        {
+            carrito.firstChild.remove()
+        }
+        for(let comprados in compras)
+        {
+            let comprado = document.createElement("li");
+            comprado.innerText = Object.values(compras[comprados])[0] + ": " + Object.values(compras[comprados])[1]
+            carrito.append(comprado)
+        }
     }
 }
-
+let compraFinalizada = false;
 let finalizado = false;
 function hacerPedido()
 {
@@ -164,33 +178,35 @@ function hacerPedido()
             cancelButtonColor: '#d33',
             confirmButtonText: 'Si, comprar!'
             }).then((result) => {
-            if (result.isConfirmed) {
-                nutriBoton();
-              Swal.fire(
-                'Perfecto!',
-                'Ya estamos haciendo tu pedido',
-                'success'
-              )
-            let caja = document.getElementById("caja")
-            let cantidades = contarCantidades();
-            let importe = 0;
-            while(caja.firstChild)
+            if (result.isConfirmed) 
             {
-                carrito.firstChild.remove()
-            }
-            for(let cantidad in cantidades)
-            {
-                importe += cantidades[cantidad]* Object.values(menuStorage)[cantidad];
-                if(cantidades[cantidad] > 0)
+                compraFinalizada = true;
+                    nutriBoton();
+                Swal.fire(
+                    'Perfecto!',
+                    'Ya estamos haciendo tu pedido',
+                    'success'
+                )
+                let caja = document.getElementById("caja")
+                let cantidades = contarCantidades();
+                let importe = 0;
+                while(caja.firstChild)
                 {
-                    cantidades[cantidad] > 1 ? plural="s" : plural=""
-                    let comprado = document.createElement("li");
-                    comprado.innerText = cantidades[cantidad] + " " + Object.keys(menuStorage)[cantidad] + plural
-                    caja.append(comprado);
+                    carrito.firstChild.remove()
                 }
-            }
-            let recibo = document.getElementById("recibo");
-            importe>envio ? recibo.innerText="$"+(importe+envio) : recibo.innerText="Elegi algo primero"
+                for(let cantidad in cantidades)
+                {
+                    importe += cantidades[cantidad]* Object.values(menuStorage)[cantidad];
+                    if(cantidades[cantidad] > 0)
+                    {
+                        cantidades[cantidad] > 1 ? plural="s" : plural=""
+                        let comprado = document.createElement("li");
+                        comprado.innerText = cantidades[cantidad] + " " + Object.keys(menuStorage)[cantidad] + plural
+                        caja.append(comprado);
+                    }
+                }
+                let recibo = document.getElementById("recibo");
+                importe>envio ? recibo.innerText="$"+(importe+envio) : recibo.innerText="Elegi algo primero"
             }})
         }
         else
@@ -238,31 +254,33 @@ let nutricion =
     Proteinas: 0,
     Grasas: 0,
 }
-console.log(nutricion)
-
+let nutriUsada = false;
 function calcularNutricion()
 {
-    let url = "infoNutri.json";
-    fetch(url)
-    .then((res)=>res.json())
-    .then((data)=>
+    if(!nutriUsada)
     {
-        let cantidades = contarCantidades();
-        for(let item in data)
+        nutriUsada = true;
+        let url = "infoNutri.json";
+        fetch(url)
+        .then((res)=>res.json())
+        .then((data)=>
         {
-            nutricion.Calorias += data[item].calorias*cantidades[item];
-            nutricion.Carbohidratos += data[item].carbohidratos*cantidades[item];
-            nutricion.Proteinas += data[item].proteinas*cantidades[item];
-            nutricion.Grasas += data[item].grasas*cantidades[item];
-        }
-        let nutribox = document.getElementById("nutribox");
-        for(let info in nutricion)
-        {
-            let nutri = document.createElement("li");
-            nutri.innerText = info + ": " + nutricion[info]
-            nutri.setAttribute("class","nutricion")
-            
-            nutribox.append(nutri)
-        }
-    });
+            let cantidades = contarCantidades();
+            for(let item in data)
+            {
+                nutricion.Calorias += data[item].calorias*cantidades[item];
+                nutricion.Carbohidratos += data[item].carbohidratos*cantidades[item];
+                nutricion.Proteinas += data[item].proteinas*cantidades[item];
+                nutricion.Grasas += data[item].grasas*cantidades[item];
+            }
+            let nutribox = document.getElementById("nutribox");
+            for(let info in nutricion)
+            {
+                let nutri = document.createElement("li");
+                nutri.innerText = info + ": " + nutricion[info]
+                nutri.setAttribute("class","nutricion")
+                nutribox.append(nutri)
+            }
+        });
+    }
 }
