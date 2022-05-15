@@ -1,18 +1,27 @@
+// Recibimos el input del usuario y lo mostramos
+(async () => {
+    await Swal.fire({
+      title: 'Contanos tu nombre',
+      input: 'text',
+      inputPlaceholder: 'Nombre...',
+      inputValidator: (value) => {
+        if (!value) {
+          return "Escribi algo!"
+        }
+        else if(value.length>10) {
+            return "10 caracteres o menos por favor"
+        }
+        getUser(value);
+      }
+    })   
+    })()
 
-function getUser()
-{
-    let user = document.getElementById("username");
-    let ingresar = document.getElementById("submit");
+function getUser(nombre) {
     let welcome=document.getElementById("bienvenida");
-    let username = localStorage.getItem("usuario");
-    if(username) welcome.innerText = "Bienvenido " + username + "!";
-    ingresar.addEventListener("click", ()=>{
-        username=user.value;
-        localStorage.setItem("usuario",username)
-        welcome.innerText = "Bienvenido " + username + "!";
-    })
+    welcome.innerText = "Bienvenido " + nombre + "!";
 }
 
+// Cargando el menu
 function displayMenu(menu)
 {
     let contador = 0;
@@ -29,6 +38,7 @@ function displayMenu(menu)
         cant.setAttribute("oninput","this.value = Math.abs(this.value)");
         cant.setAttribute("step","1");
         cant.setAttribute("class","pedido");
+        cant.setAttribute("value","0")
         cant.id="cant"+contador;
         contador++;
         lista.append(cant);
@@ -37,24 +47,13 @@ function displayMenu(menu)
     item.innerText = "Envio: $"+envio;
     lista.append(item);
 }
-
 const envio = 50;
 
-getUser();
-
-const menuBase = 
-{
-    Hamburguesa: 400,
-    Milanesa: 500,
-    Empanada: 150,
-    Pizza: 800,
-    Cerveza: 300,
-    Agua: 150,
-}
-
-sessionStorage.setItem("MI_MENU",JSON.stringify(menuBase));
-let menuStorage = JSON.parse(sessionStorage.getItem("MI_MENU"));
-
+// Cargamos el menu que es un objeto
+let url = "menuBase.json";
+fetch(url)
+.then((res)=>res.json())
+.then((data)=> menuBase = data)
 const getMenu = (menu) => new Promise( (resolve, reject) => {
         let loadingMenu = document.getElementById("menu")
         let loading = document.createElement("h3")
@@ -72,11 +71,11 @@ const getMenu = (menu) => new Promise( (resolve, reject) => {
             }
         }, 500);
     });
-
 getMenu(menu)
     .then((response)=>{
         console.log(response) 
-        displayMenu(menuStorage)
+        displayMenu(menuBase)
+        // Ejecutamos las funciones principales
         chequeoCompra()
         hacerPedido() })
     .catch((error)=>{
@@ -87,8 +86,9 @@ getMenu(menu)
 
     })
 
+// Para cada producto nuevo
 class Agregado {
-    constructor(nombre, cantidad)
+    constructor(nombre, cantidad) 
     {
         this.nombre = nombre;
         this.cantidad = cantidad;
@@ -96,17 +96,26 @@ class Agregado {
 }
 
 let id = 1;
-
 let compras = []
 let i = 0;
+let primeraCompra = false;
 
+// El chequeo de cada producto
 function chequeoCompra()
 {
     let i = 0;
-    for(let producto in menuStorage)
+    for(let producto in menuBase)
     {
         let item = document.getElementById("cant"+i)
-        item.onchange = ()=> {
+        item.onchange = ()=> 
+        {
+            if(!primeraCompra)
+            {
+                primeraCompra=true;
+                displayCarrito();
+            }
+            // Limitamos a 24 unidades de cada producto
+            if(item.value>24) item.value=24;
             let sumado = new Agregado(producto,item.value)
             if(compras.length==0) compras.push(sumado)
             else {
@@ -136,13 +145,35 @@ function chequeoCompra()
                     compras.splice(agregados, 1)
                 }
             }
-
             updateCarrito(compras)
         }
         i++;
     }
 }
 
+function displayCarrito()
+{
+    let carrito = document.getElementById("carrito-box");
+    console.log("aparece el carrito")
+    carrito.style.opacity = "100";
+    /*
+    let id = null;
+    let pos = 0;
+    clearInterval(id)
+    id = setInterval(frame,5);
+    function frame() {
+        if(pos == 350) clearInterval(id)
+        else {
+            pos++;
+            carrito.style.top = pos + "px";
+            carrito.style.left = pos + "px";
+            carrito.style.backgroundColor = "blue";
+        }
+    }
+    */
+}
+
+// Vamos actualizando el carrito borrando lo que habia antes para no duplicar
 function updateCarrito(compras)
 {
     if(!compraFinalizada)
@@ -162,52 +193,66 @@ function updateCarrito(compras)
 }
 let compraFinalizada = false;
 let finalizado = false;
+
+// Chequeamos que el usuario haya comprado por lo menos un producto al comprar
+function chequeoCompraVacia()
+{
+    let compraVacia = false;
+    return compraVacia;
+}
+
+// El checkout al comprar
 function hacerPedido()
 {
     let botonCompra=document.getElementById("comprar");
     botonCompra.addEventListener("click", ()=>{
         if (!finalizado)
         {
-            finalizado = true;
-            Swal.fire({
-            title: 'Estas seguro?',
-            text: "No se aceptan devoluciones",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Si, comprar!'
-            }).then((result) => {
-            if (result.isConfirmed) 
+            let cantidades = contarCantidades();
+            if (cantidades==0)
             {
-                compraFinalizada = true;
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Comprá un producto por lo menos',
+                })
+            }
+            else
+            {
+                Swal.fire({
+                title: 'Estas seguro?',
+                text: "No se aceptan devoluciones",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, comprar!'
+                }).then((result) => {
+                if (result.isConfirmed) 
+                {
+                    finalizado = true;
+                    compraFinalizada = true;
                     nutriBoton();
-                Swal.fire(
-                    'Perfecto!',
-                    'Ya estamos haciendo tu pedido',
-                    'success'
-                )
-                let caja = document.getElementById("caja")
-                let cantidades = contarCantidades();
-                let importe = 0;
-                while(caja.firstChild)
-                {
-                    carrito.firstChild.remove()
-                }
-                for(let cantidad in cantidades)
-                {
-                    importe += cantidades[cantidad]* Object.values(menuStorage)[cantidad];
-                    if(cantidades[cantidad] > 0)
+                    Swal.fire(  'Perfecto!',
+                                'Ya estamos haciendo tu pedido',
+                                'success' )
+                    let caja = document.getElementById("caja")
+                    let importe = 0;
+                    while(caja.firstChild) carrito.firstChild.remove();
+                    for(let cantidad in cantidades)
                     {
-                        cantidades[cantidad] > 1 ? plural="s" : plural=""
-                        let comprado = document.createElement("li");
-                        comprado.innerText = cantidades[cantidad] + " " + Object.keys(menuStorage)[cantidad] + plural
-                        caja.append(comprado);
+                        importe += cantidades[cantidad]* Object.values(menuBase)[cantidad];
+                        if(cantidades[cantidad] > 0)
+                        {
+                            cantidades[cantidad] > 1 ? plural="s" : plural=""
+                            let comprado = document.createElement("li");
+                            comprado.innerText = cantidades[cantidad] + " " + Object.keys(menuBase)[cantidad] + plural
+                            caja.append(comprado);
+                        }
                     }
-                }
-                let recibo = document.getElementById("recibo");
-                importe>envio ? recibo.innerText="$"+(importe+envio) : recibo.innerText="Elegi algo primero"
-            }})
+                    let recibo = document.getElementById("recibo");
+                    recibo.innerText="$"+(importe+envio);
+                }})
+            }
         }
         else
         {
@@ -216,7 +261,7 @@ function hacerPedido()
                 title: 'Paciencia',
                 text: 'Tu pedido ya está en camino!',
                 footer: '<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Por que tengo que esperar tanto?</a>'
-              })
+            })
         }
     }
     )
@@ -224,16 +269,19 @@ function hacerPedido()
 
 function contarCantidades()
 {
+    let cantTotal = 0;
     let error = document.getElementById("recibo--error");
     error.innerText="";
     let cantidades = [];
-    let cantMenu = Object.keys(menuStorage).length;
+    let cantMenu = Object.keys(menuBase).length;
     for (let i=0; i<cantMenu; i++)
     {
         let prod = document.getElementById("cant"+i);
-        prod.value<25 ? cantidades[i] = prod.value : error.innerText="Por favor 24 unidades o menos de cada producto"
+        prod.value<25 ? cantidades[i] = prod.value : cantidades[i] = 24;
+        cantTotal = cantTotal + parseInt(prod.value)
     }
-    return cantidades;
+    if(cantTotal==0) return 0;
+    else return cantidades;
 }
 
 function nutriBoton()

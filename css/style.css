@@ -1,19 +1,73 @@
-#carrito-box{
-    background-color: rgb(255, 147, 147);
-    position: fixed;
-    right: 1rem;
-    bottom: 1rem;
-    min-width: 300px;
-    min-height: 200px;
-    border-radius: 1rem;
-    box-shadow: 0 0 0.4rem 0.2rem grey;
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
 }
 
 body {
     font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif; 
+    background-image: url(../images/comida-fondo.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    justify-content: center;
+}
+
+#titulo {
+    background-color: antiquewhite;
+    width: max-content;
+    text-align: center;
+    margin: 1rem auto 1rem auto;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+main {
+    background-color: antiquewhite;
+    width: min(70vw,800px);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1rem;
+    border-radius: 0.5rem;   
+    position: relative;
+}
+
+#bienvenida {
+    margin-bottom: 1rem;
+}
+
+/* Menu */
+
+#menu__lista{
+    list-style-position: inside;
+    font-size: 1rem;
+}
+
+.pedido {
+    margin: 0.5rem 0 1rem 0;
 }
 
 .nutricion {
     background-color: aquamarine;
     width:20rem;
+}
+
+#carrito-box{
+    background-color: rgb(255, 147, 147);
+    left: 50vw;
+    position: absolute;
+    bottom: 1rem;
+    min-width: 300px;
+    min-height: 200px;
+    border-radius: 1rem;
+    box-shadow: 0 0 0.4rem 0.2rem grey;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+@media screen and (max-width: 600px) {
+    main {
+        width: 100vw;
+        margin: 0px;
+    }
 }

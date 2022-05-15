@@ -1,5 +1,3 @@
-
-
 [
     {"nombre": "hamburguesa", "id": 1, "calorias": 610,  "carbohidratos": 37,  "proteinas": 32, "grasas": 36},
     {"nombre": "milanesa",    "id": 2, "calorias": 354,  "carbohidratos": 14,  "proteinas": 23, "grasas": 22},
