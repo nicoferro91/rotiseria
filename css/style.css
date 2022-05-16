@@ -19,6 +19,7 @@ body {
     margin: 1rem auto 1rem auto;
     border-radius: 0.5rem;
     padding: 1rem;
+    box-shadow: 0 0 2rem 0.2rem grey;
 }
 
 main {
@@ -26,9 +27,10 @@ main {
     width: min(70vw,800px);
     margin-left: auto;
     margin-right: auto;
-    padding: 1rem;
+    padding: 2rem;
     border-radius: 0.5rem;   
     position: relative;
+    box-shadow: 0 0 2rem 0.2rem grey;
 }
 
 #bienvenida {
@@ -36,25 +38,37 @@ main {
 }
 
 /* Menu */
-
 #menu__lista{
     list-style-position: inside;
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 .pedido {
     margin: 0.5rem 0 1rem 0;
+    font-size: 1rem;
+    height: 2rem;
+    width: 3rem;
+    text-align: center;
+}
+
+#botonCompra {
+    height: 2rem;
+    width: 6rem;
+    font-size: 1rem;
+    background-color: rgb(255, 174, 0);
+    border-radius: 0.5rem;
+    margin: 1rem 0 1rem 0;
 }
 
 .nutricion {
-    background-color: aquamarine;
-    width:20rem;
+    background-color:rgb(144, 255, 222);
+    width:15rem;
 }
 
 #carrito-box{
     background-color: rgb(255, 147, 147);
-    left: 50vw;
-    position: absolute;
+    left: 70vw;
+    position: fixed;
     bottom: 1rem;
     min-width: 300px;
     min-height: 200px;
@@ -65,7 +79,27 @@ main {
     transition: opacity 1s;
 }
 
-@media screen and (max-width: 600px) {
+.info-nutri {
+    height: 1.5rem;
+    width: 12rem;
+    font-size: 1rem;
+    background-color: rgb(144, 255, 222);
+    border-radius: 0.5rem;
+    margin: 1rem 0 1rem 0;
+    border-radius: 1rem;
+}
+
+footer {
+    text-align: center;
+}
+
+@media screen and (max-width: 800px) {
+    main {
+        width: 560px;
+    }
+}
+
+@media screen and (max-width: 560px) {
     main {
         width: 100vw;
         margin: 0px;

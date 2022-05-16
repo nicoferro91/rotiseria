@@ -1,8 +1,0 @@
-[
-    {"nombre": "hamburguesa", "id": 1, "calorias": 610,  "carbohidratos": 37,  "proteinas": 32, "grasas": 36},
-    {"nombre": "milanesa",    "id": 2, "calorias": 354,  "carbohidratos": 14,  "proteinas": 23, "grasas": 22},
-    {"nombre": "empanada",    "id": 3, "calorias": 263,  "carbohidratos": 20,  "proteinas": 7,  "grasas": 17},
-    {"nombre": "pizza",       "id": 4, "calorias": 1536, "carbohidratos": 134, "proteinas": 71, "grasas": 79},
-    {"nombre": "cerveza",     "id": 5, "calorias": 430,  "carbohidratos": 36,  "proteinas": 5,  "grasas": 0 },
-    {"nombre": "agua",        "id": 6, "calorias": 0,    "carbohidratos": 0,   "proteinas": 0,  "grasas": 0 }
-]

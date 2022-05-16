@@ -1,0 +1,22 @@
+[
+    {"nombre": "hambur simple",      "id": 1,  "calorias": 410, "carbohidratos": 30,  "proteinas": 30, "grasas": 30},
+    {"nombre": "hambur completa",    "id": 2,  "calorias": 610, "carbohidratos": 37,  "proteinas": 32, "grasas": 36},
+    {"nombre": "milanesa",           "id": 3,  "calorias": 354, "carbohidratos": 14,  "proteinas": 23, "grasas": 22},
+    {"nombre": "milanesa napo",      "id": 4,  "calorias": 554, "carbohidratos": 20,  "proteinas": 35, "grasas": 27},
+    {"nombre": "empanada de carne",  "id": 5,  "calorias": 263, "carbohidratos": 20,  "proteinas": 7,  "grasas": 17},
+    {"nombre": "pizza muzza chica",  "id": 6,  "calorias": 800, "carbohidratos": 70,  "proteinas": 35, "grasas": 41},
+    {"nombre": "pizza muzza grande", "id": 7,  "calorias": 1536,"carbohidratos": 134, "proteinas": 71, "grasas": 79},
+    {"nombre": "rabas",              "id": 8,  "calorias": 320, "carbohidratos": 20,  "proteinas": 29, "grasas": 13},
+    {"nombre": "papas chica",        "id": 9,  "calorias": 547, "carbohidratos": 50,  "proteinas": 7,  "grasas": 37},
+    {"nombre": "papas grande",       "id": 10, "calorias": 1094,"carbohidratos": 100, "proteinas": 14, "grasas": 74},
+    {"nombre": "tortilla chica",     "id": 11, "calorias": 269, "carbohidratos": 28,  "proteinas": 6,  "grasas": 15},
+    {"nombre": "tortilla grande",    "id": 12, "calorias": 538, "carbohidratos": 56,  "proteinas": 12, "grasas": 30},
+    {"nombre": "cesar chica",        "id": 13, "calorias": 190, "carbohidratos": 9,   "proteinas": 27, "grasas": 5 },
+    {"nombre": "cesar grande",       "id": 14, "calorias": 380, "carbohidratos": 18,  "proteinas": 54, "grasas": 10},
+    {"nombre": "coca 1.5",           "id": 15, "calorias": 450, "carbohidratos": 112, "proteinas": 0,  "grasas": 0 },
+    {"nombre": "agua",               "id": 16, "calorias": 0,   "carbohidratos": 0,   "proteinas": 0,  "grasas": 0 },
+    {"nombre": "cerveza 1l",         "id": 17, "calorias": 430, "carbohidratos": 36,  "proteinas": 6,  "grasas": 0 },
+    {"nombre": "cerveza 473ml",      "id": 18, "calorias": 215, "carbohidratos": 18,  "proteinas": 3,  "grasas": 0 },
+    {"nombre": "cerveza 1l",         "id": 19, "calorias": 430, "carbohidratos": 36,  "proteinas": 6,  "grasas": 0 },
+    {"nombre": "cerveza 473ml",      "id": 20, "calorias": 215, "carbohidratos": 18,  "proteinas": 3,  "grasas": 0 }
+]

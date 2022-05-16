@@ -50,7 +50,7 @@ function displayMenu(menu)
 const envio = 50;
 
 // Cargamos el menu que es un objeto
-let url = "menuBase.json";
+let url = "data/menuBase.json";
 fetch(url)
 .then((res)=>res.json())
 .then((data)=> menuBase = data)
@@ -154,23 +154,7 @@ function chequeoCompra()
 function displayCarrito()
 {
     let carrito = document.getElementById("carrito-box");
-    console.log("aparece el carrito")
     carrito.style.opacity = "100";
-    /*
-    let id = null;
-    let pos = 0;
-    clearInterval(id)
-    id = setInterval(frame,5);
-    function frame() {
-        if(pos == 350) clearInterval(id)
-        else {
-            pos++;
-            carrito.style.top = pos + "px";
-            carrito.style.left = pos + "px";
-            carrito.style.backgroundColor = "blue";
-        }
-    }
-    */
 }
 
 // Vamos actualizando el carrito borrando lo que habia antes para no duplicar
@@ -194,13 +178,6 @@ function updateCarrito(compras)
 let compraFinalizada = false;
 let finalizado = false;
 
-// Chequeamos que el usuario haya comprado por lo menos un producto al comprar
-function chequeoCompraVacia()
-{
-    let compraVacia = false;
-    return compraVacia;
-}
-
 // El checkout al comprar
 function hacerPedido()
 {
@@ -208,6 +185,7 @@ function hacerPedido()
     botonCompra.addEventListener("click", ()=>{
         if (!finalizado)
         {
+            // Chequeamos que el usuario haya comprado por lo menos un producto al comprar
             let cantidades = contarCantidades();
             if (cantidades==0)
             {
@@ -256,6 +234,7 @@ function hacerPedido()
         }
         else
         {
+            // Mensaje de error cuando el usuario clickea comprar despues de haber comprado
             Swal.fire({
                 icon: 'error',
                 title: 'Paciencia',
@@ -267,6 +246,7 @@ function hacerPedido()
     )
 }
 
+// Contamos las cantidades de cada input
 function contarCantidades()
 {
     let cantTotal = 0;
@@ -284,6 +264,7 @@ function contarCantidades()
     else return cantidades;
 }
 
+// Display de informacion nutricional
 function nutriBoton()
 {
     let nutribox = document.getElementById("nutribox");
@@ -308,7 +289,7 @@ function calcularNutricion()
     if(!nutriUsada)
     {
         nutriUsada = true;
-        let url = "infoNutri.json";
+        let url = "data/infoNutri.json";
         fetch(url)
         .then((res)=>res.json())
         .then((data)=>

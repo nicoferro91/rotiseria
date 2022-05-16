@@ -1,0 +1,23 @@
+
+    {
+        "Hamburguesa simple": 300,
+        "Hamburguesa completa": 500,
+        "Milanesa": 500,
+        "Milanesa napolitana": 700,
+        "Empanada de carne": 150,
+        "Pizza muzzarella chica": 650,
+        "Pizza muzzarella grande": 1020,
+        "Rabas 200gr": 600,
+        "Porcion de papas chica": 420,
+        "Porcion de papas grande": 710,
+        "Tortilla de papa chica": 500,
+        "Tortilla de papa grande": 840,
+        "Ensalada cesar chica": 600,
+        "Ensalada cesar grande": 880,
+        "Coca Cola 2.25l": 420,
+        "Agua mineral 1l": 280,
+        "Brahma 1l": 420,
+        "Lata Brahma 473ml": 300,
+        "Heineken 1l": 540,
+        "Heineken lata 473ml": 360        
+    }
