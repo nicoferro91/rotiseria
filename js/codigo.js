@@ -265,6 +265,7 @@ function contarCantidades()
 }
 
 // Display de informacion nutricional
+// Queria usar una API para esto pero no encontré una gratis que me sirva
 function nutriBoton()
 {
     let nutribox = document.getElementById("nutribox");
