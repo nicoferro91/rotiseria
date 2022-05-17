@@ -51,13 +51,16 @@ main {
     text-align: center;
 }
 
-#botonCompra {
+.boton {
     height: 2rem;
-    width: 6rem;
+    /* width: 6rem; */
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
     font-size: 1rem;
     background-color: rgb(255, 174, 0);
     border-radius: 0.5rem;
     margin: 1rem 0 1rem 0;
+    border: solid black 1px;
 }
 
 .nutricion {
@@ -90,7 +93,15 @@ main {
 }
 
 footer {
+    margin-top: 4rem;
     text-align: center;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    font-size: 1rem;
 }
 
 @media screen and (max-width: 800px) {

@@ -5,6 +5,8 @@
 }
 
 body {
+    background-image: url(../images/comida-fondo.jpg);
+    background-size: cover;
     background-color: white;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
@@ -12,7 +14,7 @@ body {
 .pelota {
     border-width: 2px;
     border-color: black;
-    background-color: bisque;
+    background-color: brown;
     display: inline-block;
     text-align: center;
     line-height: 40px;
@@ -39,7 +41,7 @@ body {
     left: 100px;
     width: 400px;
     height: 600px;
-    background-color: rgb(207, 189, 145);
+    background-color: antiquewhite;
 }
 
 .paleta {

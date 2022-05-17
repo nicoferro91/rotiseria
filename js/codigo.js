@@ -1,25 +1,86 @@
-// Recibimos el input del usuario y lo mostramos
-(async () => {
-    await Swal.fire({
-      title: 'Contanos tu nombre',
-      input: 'text',
-      inputPlaceholder: 'Nombre...',
-      inputValidator: (value) => {
-        if (!value) {
-          return "Escribi algo!"
-        }
-        else if(value.length>10) {
-            return "10 caracteres o menos por favor"
-        }
-        getUser(value);
-      }
-    })   
-    })()
+let compraFinalizada = false;
 
-function getUser(nombre) {
+// Recibimos el input del usuario
+function getUser() {
+    let nombre = sessionStorage.getItem("miNombre");
+    if(!nombre) 
+    {
+        (async () => {
+            await Swal.fire({
+            title: 'Contanos tu nombre',
+            input: 'text',
+            inputPlaceholder: 'Nombre...',
+            inputValidator: (value) => {
+                if (!value) {
+                return "Escribi algo!"
+                }
+                else if(value.length>10) {
+                    return "10 caracteres o menos por favor"
+                }
+                displayUser(value);
+            }
+            })
+        })()
+    }
+    else {
+        displayUser(nombre)
+    }
+}
+getUser();
+
+// Mostramos el nombre del usuario
+function displayUser(nombre) {
+    sessionStorage.setItem("miNombre", nombre)
     let welcome=document.getElementById("bienvenida");
     welcome.innerText = "Bienvenido " + nombre + "!";
 }
+
+// Chequeamos si la compra ya fue hecha
+function compraVieja() {
+    let compraAnterior = JSON.parse(sessionStorage.getItem("miCompra"))
+    if(compraAnterior)
+    {
+        crearRecibo(compraAnterior);
+        compraFinalizada = true;
+    }
+}
+
+// Chequeamos una compra parcial, que sumo al carrito pero no compró
+let carritoKiller = false;
+function compraParcial() {
+    let compraParcial = JSON.parse(sessionStorage.getItem("miCompraParcial"));
+    if(compraParcial!==0)
+    {
+        console.log("compra parcial encontrada")
+        displayCarrito()
+        for(let item in compraParcial)
+        {
+            let cambio = document.getElementById("cant"+item);
+            cambio.setAttribute("value",compraParcial[item]);
+            let carrito = document.getElementById("carrito");
+            if(compraParcial[item]>0)
+            {
+                let comprado = document.createElement("li");
+                comprado.innerText = Object.keys(menuBase)[item]+ ": " + compraParcial[item];
+                carrito.append(comprado)                
+            }                      
+        }
+
+    }
+    else
+    {
+        console.log("compra parcial NO encontrada")
+    }
+}
+
+function cargarParcial(clase){
+    const items = document.getElementsByClassName(clase);
+    while(items.length > 0){
+        items[0].parentNode.removeChild(items[0]);
+    }
+}
+
+
 
 // Cargando el menu
 function displayMenu(menu)
@@ -71,11 +132,14 @@ const getMenu = (menu) => new Promise( (resolve, reject) => {
             }
         }, 500);
     });
+
 getMenu(menu)
     .then((response)=>{
         console.log(response) 
         displayMenu(menuBase)
         // Ejecutamos las funciones principales
+        compraParcial()
+        compraVieja()
         chequeoCompra()
         hacerPedido() })
     .catch((error)=>{
@@ -83,7 +147,6 @@ getMenu(menu)
     .finally( ()=>{
         loading = document.getElementById("cargandoMenu");
         loading.remove();
-
     })
 
 // Para cada producto nuevo
@@ -98,7 +161,6 @@ class Agregado {
 let id = 1;
 let compras = []
 let i = 0;
-let primeraCompra = false;
 
 // El chequeo de cada producto
 function chequeoCompra()
@@ -109,11 +171,7 @@ function chequeoCompra()
         let item = document.getElementById("cant"+i)
         item.onchange = ()=> 
         {
-            if(!primeraCompra)
-            {
-                primeraCompra=true;
-                displayCarrito();
-            }
+            displayCarrito();
             // Limitamos a 24 unidades de cada producto
             if(item.value>24) item.value=24;
             let sumado = new Agregado(producto,item.value)
@@ -129,14 +187,12 @@ function chequeoCompra()
                         falta=0;
                     }
                     else falta=1;
-                }
-                // Si falta lo agregamos al array sumado
+                }   // Si falta lo agregamos al array sumado
                 if(falta==1)
                 {
                     compras.push(sumado)
                 }
-            }
-            // Antes de mandar removemos los productos con cantidad cero
+            }   // Antes de mandar removemos los productos con cantidad cero
             for(let agregados in compras)
             {
                 let chequeoCero = (Object.values(compras[agregados]))[1]
@@ -158,34 +214,35 @@ function displayCarrito()
 }
 
 // Vamos actualizando el carrito borrando lo que habia antes para no duplicar
-function updateCarrito(compras)
+function updateCarrito()
 {
     if(!compraFinalizada)
     {
-        let carrito = document.getElementById("carrito")
+        let carrito = document.getElementById("carrito");
         while(carrito.firstChild)
         {
             carrito.firstChild.remove()
         }
-        for(let comprados in compras)
+        let cantidades = contarCantidades();
+        for(let item in cantidades)
         {
-            let comprado = document.createElement("li");
-            comprado.innerText = Object.values(compras[comprados])[0] + ": " + Object.values(compras[comprados])[1]
-            carrito.append(comprado)
+            if(cantidades[item]>0)
+            {
+                let comprado = document.createElement("li");
+                comprado.innerText = Object.keys(menuBase)[item]+ ": " + cantidades[item];
+                carrito.append(comprado)
+            }
         }
     }
 }
-let compraFinalizada = false;
-let finalizado = false;
-
+            
 // El checkout al comprar
 function hacerPedido()
 {
-    let botonCompra=document.getElementById("comprar");
+    let botonCompra=document.getElementById("botonCompra");
     botonCompra.addEventListener("click", ()=>{
-        if (!finalizado)
-        {
-            // Chequeamos que el usuario haya comprado por lo menos un producto al comprar
+        if (!compraFinalizada)
+        {   // Chequeamos que el usuario haya comprado por lo menos un producto al comprar
             let cantidades = contarCantidades();
             if (cantidades==0)
             {
@@ -207,34 +264,17 @@ function hacerPedido()
                 }).then((result) => {
                 if (result.isConfirmed) 
                 {
-                    finalizado = true;
                     compraFinalizada = true;
-                    nutriBoton();
+                    guardarCompra(cantidades);
+                    crearRecibo(cantidades);
                     Swal.fire(  'Perfecto!',
                                 'Ya estamos haciendo tu pedido',
                                 'success' )
-                    let caja = document.getElementById("caja")
-                    let importe = 0;
-                    while(caja.firstChild) carrito.firstChild.remove();
-                    for(let cantidad in cantidades)
-                    {
-                        importe += cantidades[cantidad]* Object.values(menuBase)[cantidad];
-                        if(cantidades[cantidad] > 0)
-                        {
-                            cantidades[cantidad] > 1 ? plural="s" : plural=""
-                            let comprado = document.createElement("li");
-                            comprado.innerText = cantidades[cantidad] + " " + Object.keys(menuBase)[cantidad] + plural
-                            caja.append(comprado);
-                        }
-                    }
-                    let recibo = document.getElementById("recibo");
-                    recibo.innerText="$"+(importe+envio);
                 }})
             }
         }
         else
-        {
-            // Mensaje de error cuando el usuario clickea comprar despues de haber comprado
+        {   // Mensaje de error cuando el usuario clickea comprar despues de haber comprado
             Swal.fire({
                 icon: 'error',
                 title: 'Paciencia',
@@ -264,9 +304,34 @@ function contarCantidades()
     else return cantidades;
 }
 
+// Creamos el recibo de la compra
+function crearRecibo(cantidades) {
+    let caja = document.getElementById("caja")
+    let importe = 0;
+    while(caja.firstChild) carrito.firstChild.remove();
+    for(let cantidad in cantidades)
+    {
+        importe += cantidades[cantidad]* Object.values(menuBase)[cantidad];
+        if(cantidades[cantidad] > 0)
+        {
+            cantidades[cantidad] > 1 ? plural="s" : plural=""
+            let comprado = document.createElement("li");
+            comprado.setAttribute("class","itemRecibo")
+            comprado.innerText = cantidades[cantidad] + " " + Object.keys(menuBase)[cantidad] + plural
+            caja.append(comprado);
+        }
+    }
+    let recibo = document.getElementById("recibo");
+    let total = document.createElement("li");
+    total.setAttribute("class","itemRecibo")
+    total.innerText="$"+(importe+envio);
+    recibo.append(total);
+    nutriBoton(cantidades);
+}
+
 // Display de informacion nutricional
-// Queria usar una API para esto pero no encontré una gratis que me sirva
-function nutriBoton()
+// Queria usar una API para esto pero no encontré una gratis que me funcione
+function nutriBoton(cantidades)
 {
     let nutribox = document.getElementById("nutribox");
     let nutribtn = document.createElement("input");
@@ -274,7 +339,7 @@ function nutriBoton()
     nutribtn.setAttribute("class","info-nutri");
     nutribtn.setAttribute("value","Informacion nutricional");
     nutribox.append(nutribtn);
-    nutribtn.addEventListener("click", ()=>calcularNutricion())
+    nutribtn.addEventListener("click", ()=>calcularNutricion(cantidades))
 }
 
 let nutricion = 
@@ -285,7 +350,7 @@ let nutricion =
     Grasas: 0,
 }
 let nutriUsada = false;
-function calcularNutricion()
+function calcularNutricion(cantidades)
 {
     if(!nutriUsada)
     {
@@ -295,7 +360,7 @@ function calcularNutricion()
         .then((res)=>res.json())
         .then((data)=>
         {
-            let cantidades = contarCantidades();
+            // let cantidades = contarCantidades();
             for(let item in data)
             {
                 nutricion.Calorias += data[item].calorias*cantidades[item];
@@ -313,4 +378,56 @@ function calcularNutricion()
             }
         });
     }
+}
+
+// Guardamos la compra en session storage
+function guardarCompra(cantidades) {
+    const cantJSON = JSON.stringify(cantidades)
+    sessionStorage.setItem("miCompra", cantJSON);
+}
+
+// Reiniciar y borrar storage
+reiniciar();
+function reiniciar() {
+    let reinicio = document.getElementById("botonReinicio")
+    reinicio.addEventListener("click", ()=>{
+        console.log("reinicio")
+        sessionStorage.removeItem("miCompra");
+        sessionStorage.removeItem("miNombre");
+        sessionStorage.removeItem("miCompraParcial");
+        getUser();
+        compraFinalizada = false;
+        nutriUsada = false;
+        borrarClase("nutricion")
+        borrarClase("itemRecibo")
+        borrarClase("info-nutri")
+        let i=0;
+        for(let item in menuBase)
+        {
+            let borrando = document.getElementById("cant"+i)
+            borrando.setAttribute("value","0")
+            i++;
+        }
+        })
+}
+
+function borrarClase(clase){
+    const items = document.getElementsByClassName(clase);
+    while(items.length > 0){
+        items[0].parentNode.removeChild(items[0]);
+    }
+}
+jugar();
+function jugar() {
+    let jugar = document.getElementById("botonJuego")
+    jugar.addEventListener("click", ()=>{
+        console.log("juego empezado");
+        window.location.href = "pages/minijuego.html"
+        if(!compraFinalizada)
+        {
+            let compraParcial = contarCantidades();
+            compraParcial = JSON.stringify(compraParcial)
+            sessionStorage.setItem("miCompraParcial",compraParcial)
+        }
+    })
 }

@@ -61,6 +61,7 @@ function rival(pelota) {
 }
 
 function movimientoPelota() {
+    let sonido = new Audio("")
     let id = null;
     const pelota = document.getElementById("pelota");
     pelota.style.opacity = "100";
