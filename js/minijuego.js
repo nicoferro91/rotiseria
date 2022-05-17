@@ -112,7 +112,7 @@ function movimientoPelota() {
                 ySpeed = ySpeed*1.2;
                 xSpeed = xSpeed*1.2;
             }
-            let distancia = Math.abs((xpos-100)-playerPosition)
+            let distancia = Math.abs((xpos-100)-rivalPosition)
             if(distancia>50)
             {
                 let anotar=document.getElementById("puntajeJugador");
